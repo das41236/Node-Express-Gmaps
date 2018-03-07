@@ -34,14 +34,37 @@ server.
   });
 });
 
+server.get('/places', (req,res) => {
+    const { term } = req.query;
 
-// server.get('/places', (req,res) => {
-//     fetch(`${URL}/textsearch/json?query=${req.query.term}&key=${API_KEY}`).
-//     then(res => res.json()).
-//     then(json => {
-//         return res.send(json.results);
-//     })
-//     .catch(err => console.error(err));
-// })
+    fetch(`${URL}/textsearch/json?query=${term}&key=${API_KEY}`).
+        then(res => res.json()).
+        then(detail => detail.results).
+        then(places => {
+            const promises = [];
+
+            places.forEach(place => {
+                promises.push(new Promise(resolve => {
+                    fetch(`${URL}/details/json?placeid=${place.place_id}&key=${API_KEY}`). 
+                    then(res => res.json()). 
+                    then(json => {
+                        resolve(json.result);
+                    }). 
+                    catch(err => console.error(err));
+
+                }));
+            });
+
+            Promise.all(promises). 
+            then(data => {
+                res.status(STATUS_OKAY);
+                res.send(data);
+            });
+        })
+        .catch(err => {
+            res.status(STATUS_USER_ERROR);
+            res.send({ error: 'Error fetching nearby places'})
+        });
+});
 
   server.listen(PORT);
