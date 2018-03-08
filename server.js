@@ -17,9 +17,9 @@ server.use(bodyParser.json());
 server.
     get('/place', (req, res) => {
     const { term } = req.query;
-    const searchTerm = term.split(' ').join('+');
+    // const searchTerm = term.split(' ').join('+');
     fetch(
-      `${URL}/textsearch/json?query=${searchTerm}&key=${API_KEY}`).
+      `${URL}/textsearch/json?query=${term}&key=${API_KEY}`).
       then(res => res.json()).
       then(detail => detail.results[0].place_id).
       then(place => {
