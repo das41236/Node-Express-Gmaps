@@ -12,11 +12,13 @@ const { getDistance } = require('../models/distance.js');
 
 router.get('/travel/mode', (req, res) => {
     const { origins, destinations } = req.query;
-    const url = URL_DISTANCE + 'origins=' + origin + '&destinations=' + destination + '&mode=' + mode + '&key=' + API_KEY;
+    console.log('origins: ', origins)
+    console.log('destinations: ', destinations)
+    const url = 'origins=' + origins + '&destinations=' + destinations;
   getDistance(url)
     .then(distance => {
     //   res.status(STATUS_OKAY);
-      res.send({distance});
+      res.send(distance);
     })
     .catch(err => {
     //   res.status(STATUS_USER_ERROR);

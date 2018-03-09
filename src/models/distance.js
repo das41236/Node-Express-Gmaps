@@ -19,12 +19,46 @@ const URL_DISTANCE = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
 
 const getDistance = (url) => {
   const driving = new Promise((resolve,reject) => {
-    fetch(url)
+    fetch(URL_DISTANCE + url + '&mode=driving&key=' + API_KEY)
     .then(res => res.json())
     .then(response => resolve(response))
     .catch(err => reject(err))
-  })
-  return driving;
+  });
+
+  const transit = new Promise((resolve, reject) => {
+    fetch(URL_DISTANCE + url + '&mode=driving&key=' + API_KEYurl). 
+    then(res => res.json()). 
+    then(response => resolve(response)). 
+    catch(err => reject(err));
+  });
+
+  const bicycling = new Promise((resolve, reject) => {
+    fetch(URL_DISTANCE + url + '&mode=driving&key=' + API_KEY). 
+    then(res => res.json()). 
+    then(response => resolve(response)). 
+    catch(err => reject(err));
+  });
+
+  const walking = new Promise((resolve, reject) => {
+    fetch(URL_DISTANCE + url + '&mode=driving&key=' + API_KEY). 
+    then(res => res.json()). 
+    then(response => resolve(response)). 
+    catch(err => reject(err));
+  });
+
+  return Promise.all([driving, transit, bicycling, walking]).
+    then(results => {
+      let shortestMode = results[0];
+      results.forEach(each => {
+        if (
+          each.rows[0].elements[0].duration.value < 
+          shortestMode.rows[0].elements[0].duration.value
+        )
+        shortestMode = each;
+      });
+      return shortestMode;
+    }). 
+    catch(err => console.log('error in getDistance:', err));
   // return new Promise((resolve, reject) => {
   //   // const distanceUrl = URL_DISTANCE + 'origins=' + origin + '&destinations=' + destination + '&mode=' + mode + '&key=' + API_KEY;
   //   fetch(url)
@@ -36,6 +70,6 @@ const getDistance = (url) => {
   //         reject(err);
   //       });
   // });
-}
+};
 
-module.exports = getDistance;
+module.exports ={ getDistance } ;
